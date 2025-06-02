@@ -7,7 +7,7 @@ pipeline {
                 script { // Necessário para usar 'docker.' em 'steps'
                     // O Docker Pipeline já sabe qual imagem está construindo
                     // e a disponibiliza para a etapa 'docker.image(...)'
-                    docker.build("leandro/guia-jenkins1:${env.BUILD_ID}", "./src")
+                    docker.build("leandro282/guia-jenkins1:${env.BUILD_ID}", "./src")
                 }
             }
         }
