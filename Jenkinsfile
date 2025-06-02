@@ -4,27 +4,30 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                script { // Necessário para usar 'docker.' em 'steps'
-                    // O Docker Pipeline já sabe qual imagem está construindo
-                    // e a disponibiliza para a etapa 'docker.image(...)'
+                script {
                     docker.build("leandro282/guia-jenkins1:${env.BUILD_ID}", "./src")
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                script { // Necessário para usar 'docker.' em 'steps'
-                    // Usa a imagem construída no estágio anterior pelo seu nome/tag
+                script {
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                        docker.image("leandro282/guia-jenkins1:${env.BUILD_ID}").push('latest')
-                        docker.image("leandro282/guia-jenkins1:${env.BUILD_ID}").push()
+                        dockerapp.push('latest')
+                        dockerapp.push("${env.BUILD_ID}")
                     }
                 }
             }
         }
         stage('Deploy no Kubernetes') {
+            environment {
+                tag_version = "${env.BUILD_ID}"
+            }
             steps {
-                sh "echo \"Executando o comando kubectl apply\""
+                withKubeConfig(credentialsId: 'kubeconfig') {
+                    sh "sed -i 's/{{tag}}/${tag_version}/g' ./k8s/deployment.yaml"
+                    sh 'kubectl apply -f k8s/deployment.yaml'
+                }
             }
         }
     }
