@@ -16,8 +16,8 @@ pipeline {
                 script { // Necessário para usar 'docker.' em 'steps'
                     // Usa a imagem construída no estágio anterior pelo seu nome/tag
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                        docker.image("leandro/guia-jenkins1:${env.BUILD_ID}").push('latest')
-                        docker.image("leandro/guia-jenkins1:${env.BUILD_ID}").push()
+                        docker.image("leandro282/guia-jenkins1:${env.BUILD_ID}").push('latest')
+                        docker.image("leandro282/guia-jenkins1:${env.BUILD_ID}").push()
                     }
                 }
             }
