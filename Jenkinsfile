@@ -1,24 +1,23 @@
 pipeline {
     agent any
-    def dockerapp
 
     stages {
         stage('Build Docker Image') {
             steps {
-                script {
-                    // CORREÇÃO AQUI: O CONTEXTO DEVE SER UM DIRETÓRIO.
-                    // Se o Dockerfile está em ./src/Dockerfile, o contexto é ./src/
-                    // Ou, se o Dockerfile está na raiz do repositório, o contexto é '.' (ponto)
-                    dockerapp = docker.build("leandro/guia-jenkins1:${env.BUILD_ID}", "./src/Dockerfile") // Contexto é o diretório 'src'
+                script { // Necessário para usar 'docker.' em 'steps'
+                    // O Docker Pipeline já sabe qual imagem está construindo
+                    // e a disponibiliza para a etapa 'docker.image(...)'
+                    docker.build("leandro/guia-jenkins1:${env.BUILD_ID}", "./src")
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
-                script {
+                script { // Necessário para usar 'docker.' em 'steps'
+                    // Usa a imagem construída no estágio anterior pelo seu nome/tag
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                        dockerapp.push('latest')
-                        dockerapp.push("${env.BUILD_ID}")
+                        docker.image("leandro/guia-jenkins1:${env.BUILD_ID}").push('latest')
+                        docker.image("leandro/guia-jenkins1:${env.BUILD_ID}").push()
                     }
                 }
             }
