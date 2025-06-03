@@ -22,13 +22,16 @@ pipeline {
         }
 
         stage('Deploy no Kubernetes') {
-            environment {
-                tag_version = "${env.BUILD_ID}"
-            }
             steps {
-                withKubeConfig(credentialsId: 'kubeconfig') {
-                    sh "sed -i 's/{{tag}}/${tag_version}/g' ./k8s/deployment.yaml"
-                    sh "kubectl apply -f k8s/deployment.yaml"
+                script {
+                    def tag_version = env.BUILD_ID
+
+                    withKubeConfig(credentialsId: 'kubeconfig') {
+                        // Cria um arquivo temporário substituindo {{tag}}
+                        sh "sed 's/{{tag}}/${tag_version}/g' k8s/deployment.yaml > k8s/deployment_aplicado.yaml"
+                        // Aplica o arquivo
+                        sh "kubectl apply -f k8s/deployment_aplicado.yaml"
+                    }
                 }
             }
         }
