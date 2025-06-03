@@ -24,9 +24,9 @@ pipeline {
                         
                         // 2. Adiciona a tag 'latest' à imagem recém-construída no Docker Hub (opcional, mas comum)
                         // Primeiro tagueia localmente a imagem construída com 'latest'
-                        //sh "docker tag ${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID} ${env.DOCKER_IMAGE_NAME}:latest"
+                        sh "docker tag ${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID} ${env.DOCKER_IMAGE_NAME}:latest"
                         // Depois, faz o push da tag 'latest' para o Docker Hub
-                        //sh "docker push ${env.DOCKER_IMAGE_NAME}:latest"
+                        sh "docker push ${env.DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
