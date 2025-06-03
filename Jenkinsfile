@@ -8,7 +8,6 @@ pipeline {
                     // Constrói a imagem e já a taggeia com o BUILD_ID
                     docker.build("leandro282/guia-jenkins1:${env.BUILD_ID}", "./src")
                     // Define uma variável de ambiente para o nome base da imagem, útil para o push
-                    // Isso não captura o objeto da imagem, apenas o nome da string
                     env.DOCKER_IMAGE_NAME = "leandro282/guia-jenkins1"
                 }
             }
@@ -16,16 +15,18 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Assegura que você está autenticado no Docker Hub
+                    // Assegura que você está autenticado no Docker Hub usando as credenciais 'dockerhub'
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                        // Faz o push da imagem com a tag BUILD_ID
-                        docker.image("${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID}").push() // Faz o push com a tag existente
 
-                        // Opcional: Para fazer o push da mesma imagem com a tag 'latest'
-                        // Primeiro, você pode taggear localmente a imagem construída
-                        docker.image("${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID}").addTag('latest')
-                        // Em seguida, faz o push da tag 'latest'
-                        docker.image("${env.DOCKER_IMAGE_NAME}:latest").push()
+                        // 1. Faz o push da imagem com a tag BUILD_ID
+                        // O comando sh 'docker push' automaticamente usa o login feito pelo withRegistry
+                        sh "docker push ${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID}"
+                        
+                        // 2. Adiciona a tag 'latest' à imagem recém-construída no Docker Hub (opcional, mas comum)
+                        // Primeiro tagueia localmente a imagem construída com 'latest'
+                        sh "docker tag ${env.DOCKER_IMAGE_NAME}:${env.BUILD_ID} ${env.DOCKER_IMAGE_NAME}:latest"
+                        // Depois, faz o push da tag 'latest' para o Docker Hub
+                        sh "docker push ${env.DOCKER_IMAGE_NAME}:latest"
                     }
                 }
             }
