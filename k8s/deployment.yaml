@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: conversao-temperatura
-        image: leandro282/guia-jenkins:{{tag}}
+        image: leandro282/guia-jenkins1:{{tag}}
         ports:
         - containerPort: 8080
 ---
