@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: conversao-temperatura
-        image: fabriciovernonez/guia-jenkins:{{tag}}
+        image: fabriciovernonez/guia-jenkins:{{tag}} # O placeholder {{tag}} será substituído pelo Jenkins
         ports:
         - containerPort: 8080
 ---
@@ -28,6 +28,5 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-    nodePort: 30000 # <--- Adicione esta linha com a porta desejada (geralmente entre 30000 e 32767)
-type: NodePort    # <--- Altere esta linha para NodePort
-
+    nodePort: 30000 
+  type: NodePort    
