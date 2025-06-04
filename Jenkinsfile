@@ -5,7 +5,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerapp = docker.build("leandro282/guia-jenkins1:${env.BUILD_ID}", "-f ./src/Dockerfile ./src")
+                    def dockerapp = docker.build("leandro282/guia-jenkins1:${env.BUILD_ID}", "-f ./src/Dockerfile ./src")
                 }
             }
         }
@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh "sed -i 's/{{tag}}/${tag_version}/g' ./k8s/deployment.yaml"
+                    sh "sed -i 's|{{tag}}|${tag_version}|g' ./k8s/deployment.yaml"
                     sh 'kubectl apply -f k8s/deployment.yaml'
                 }
             }
