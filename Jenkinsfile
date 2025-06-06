@@ -33,4 +33,32 @@ pipeline {
             }
         }
     }
+
+    // --- SEÇÃO 'post' AJUSTADA E IDENTADA CORRETAMENTE ---
+    post {
+        always {
+            // Chuck Norris aparece em todos os builds
+            chuckNorris() // Este passo depende do plugin Chuck Norris estar instalado no Jenkins
+        }
+
+        success {
+            echo '🚀 Deploy realizado com sucesso!'
+            echo '💪 Chuck Norris aprova seu pipeline DevSecOps!'
+            echo "✅ Imagem jamalshadowdev/meuapp:${env.BUILD_ID} deployada no Kubernetes"
+            // Se você quiser que o Chuck Norris apareça APENAS no sucesso, mova chuckNorris() para cá
+        }
+
+        failure {
+            echo '❌ Build falhou, mas Chuck Norris nunca desiste!'
+            echo '🔍 Chuck Norris está investigando o problema...'
+            echo '💡 Verifique: Docker build, DockerHub push ou Kubernetes deploy'
+            // Se você quiser que o Chuck Norris apareça APENAS na falha, mova chuckNorris() para cá
+        }
+
+        unstable {
+            echo '⚠️ Build instável - Chuck Norris está monitorando'
+            // Se você quiser que o Chuck Norris apareça APENAS no instável, mova chuckNorris() para cá
+        }
+    }
+    // --- FIM DA SEÇÃO 'post' ---
 }
