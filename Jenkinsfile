@@ -33,4 +33,24 @@ pipeline {
             }
         }
     }
+
+    // --- SEÇÃO 'post' ADICIONADA AQUI ---
+    post {
+        always { // Esta seção 'always' será executada após todos os estágios, independentemente do sucesso ou falha
+            echo 'Verificando o status da pipeline para um fato do Chuck Norris...'
+            chuckNorris() // Este é o passo que o plugin Chuck Norris disponibiliza
+        }
+        success { // Esta seção é executada SE e SOMENTE SE a pipeline for um sucesso (todos os estágios passarem)
+            echo 'A pipeline foi um sucesso! Chuck Norris aprova!'
+        }
+        failure { // Esta seção é executada SE e SOMENTE SE a pipeline falhar em algum estágio
+            echo 'A pipeline falhou! O Chuck Norris está observando...'
+        }
+        // Você pode adicionar outras condições aqui se quiser, como:
+        // unstable { // Ação se o build for instável (testes falham, mas o build principal passa)
+        //     echo 'Build instável, mas Chuck Norris ainda pode salvar o dia.'
+        //     chuckNorris()
+        // }
+    }
+    // --- FIM DA SEÇÃO 'post' ---
 }
